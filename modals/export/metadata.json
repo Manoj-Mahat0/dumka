@@ -1,0 +1,18 @@
+{
+  "image_size": 256,
+  "channels": 3,
+  "input_name": "input_layer",
+  "output_name": "output_0",
+  "input_shape": [
+    1,
+    256,
+    256,
+    3
+  ],
+  "normalization": "pixel values divided by 255 inside the model",
+  "classes": [
+    "Early_Blight",
+    "Healthy",
+    "Late_Blight"
+  ]
+}

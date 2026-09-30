@@ -1,0 +1,72 @@
+{
+  "columns": [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+  ],
+  "field_info": {
+    "N": {
+      "label": "N - Ratio of Nitrogen content in soil",
+      "description": "Ratio of Nitrogen content in soil",
+      "unit": "ratio"
+    },
+    "P": {
+      "label": "P - Ratio of Phosphorous content in soil",
+      "description": "Ratio of Phosphorous content in soil",
+      "unit": "ratio"
+    },
+    "K": {
+      "label": "K - Ratio of Potassium content in soil",
+      "description": "Ratio of Potassium content in soil",
+      "unit": "ratio"
+    },
+    "temperature": {
+      "label": "Temperature - Temperature in degree Celsius",
+      "description": "Temperature in degree Celsius",
+      "unit": "°C"
+    },
+    "humidity": {
+      "label": "Humidity - Relative humidity in %",
+      "description": "Relative humidity in %",
+      "unit": "%"
+    },
+    "ph": {
+      "label": "pH - pH value of the soil",
+      "description": "pH value of the soil",
+      "unit": "pH"
+    },
+    "rainfall": {
+      "label": "Rainfall - Rainfall in mm",
+      "description": "Rainfall in mm",
+      "unit": "mm"
+    }
+  },
+  "class_labels": [
+    "apple",
+    "banana",
+    "blackgram",
+    "chickpea",
+    "coconut",
+    "coffee",
+    "cotton",
+    "grapes",
+    "jute",
+    "kidneybeans",
+    "lentil",
+    "maize",
+    "mango",
+    "mothbeans",
+    "mungbean",
+    "muskmelon",
+    "orange",
+    "papaya",
+    "pigeonpeas",
+    "pomegranate",
+    "rice",
+    "watermelon"
+  ]
+}
