@@ -8,6 +8,9 @@ const connectDatabase = require("./config/database");
 const authRoutes = require("./routes/auth.routes");
 const bannerRoutes = require("./routes/banner.routes");
 const broadcastRoutes = require("./routes/broadcast.routes");
+const farmerAdminRoutes = require("./routes/farmer.routes");
+const farmRoutes = require("./routes/farm.routes");
+const deviceRoutes = require("./routes/device.routes");
 const notificationRoutes = require("./routes/notification.routes");
 const cropRoutes = require("./routes/crop.routes");
 const aiRoutes = require("./routes/ai.routes");
@@ -53,6 +56,9 @@ app.use("/api/auth", authRoutes);
 // Admin
 app.use("/api/admin/banners", bannerRoutes);
 app.use("/api/admin/broadcasts", broadcastRoutes);
+app.use("/api/admin/farmers", farmerAdminRoutes);
+app.use("/api/admin/farms", farmRoutes);
+app.use("/api/admin/devices", deviceRoutes);
 
 // Farmer
 app.use("/api/notifications", notificationRoutes);
