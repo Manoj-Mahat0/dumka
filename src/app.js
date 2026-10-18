@@ -15,6 +15,7 @@ const notificationRoutes = require("./routes/notification.routes");
 const cropRoutes = require("./routes/crop.routes");
 const aiRoutes = require("./routes/ai.routes");
 const diseaseRoutes = require("./routes/disease.routes");
+const iotRoutes = require("./routes/iot.routes");
 
 const app = express();
 
@@ -65,5 +66,6 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/crops", cropRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/disease", diseaseRoutes);
+app.use("/api/iot", iotRoutes);
 
 module.exports = app;

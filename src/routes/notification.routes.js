@@ -101,6 +101,37 @@ router.patch(
  *     security:
  *       - bearerAuth: []
  */
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("farmer"),
+  async (req, res) => {
+    try {
+      const notification = await Notification.findOneAndDelete({
+        _id: req.params.id,
+        userId: req.user.id
+      });
+
+      if (!notification) {
+        return res.status(404).json({
+          success: false,
+          message: "Notification not found"
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Notification deleted"
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete notification"
+      });
+    }
+  }
+);
+
 router.patch(
   "/:id/read",
   authenticate,
