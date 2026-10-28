@@ -24,6 +24,11 @@ const iotStateSchema = new mongoose.Schema(
       default: null
     },
 
+    soilDry: {
+      type: Boolean,
+      default: null
+    },
+
     pumpOn: {
       type: Boolean,
       default: false

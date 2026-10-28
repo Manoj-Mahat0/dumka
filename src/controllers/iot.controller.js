@@ -26,6 +26,7 @@ const present = (state) => ({
   temperature: state?.temperature ?? null,
   humidity: state?.humidity ?? null,
   gas: state?.gas ?? null,
+  soilDry: state?.soilDry ?? null,
   gasLevel: gasLevel(state?.gas),
   pumpOn: Boolean(state?.pumpOn),
   lastSeen: state?.lastSeen || null
@@ -51,6 +52,7 @@ const postReading = async (req, res) => {
     const temperature = Number(req.body.temperature);
     const humidity = Number(req.body.humidity);
     const gas = Number(req.body.gas);
+    const soilDry = req.body.soilDry;
 
     const update = {
       lastSeen: new Date()
@@ -59,6 +61,7 @@ const postReading = async (req, res) => {
     if (Number.isFinite(temperature)) update.temperature = temperature;
     if (Number.isFinite(humidity)) update.humidity = humidity;
     if (Number.isFinite(gas)) update.gas = gas;
+    if (typeof soilDry === "boolean") update.soilDry = soilDry;
 
     const state = await IotState.findOneAndUpdate(
       { deviceId },
@@ -133,7 +136,7 @@ const setPump = async (req, res) => {
       { deviceId },
       {
         $set: { pumpOn, deviceId },
-        $setOnInsert: { temperature: null, humidity: null, gas: null }
+        $setOnInsert: { temperature: null, humidity: null, gas: null, soilDry: null }
       },
       { new: true, upsert: true }
     );
