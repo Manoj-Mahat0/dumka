@@ -1,4 +1,6 @@
 const IotState = require("../models/iotState.model");
+const Notification = require("../models/notification.model");
+const User = require("../models/user.model");
 
 const DEFAULT_DEVICE_ID = "khetix-esp01";
 const ONLINE_WINDOW_MS = 20000;
@@ -27,6 +29,8 @@ const present = (state) => ({
   humidity: state?.humidity ?? null,
   gas: state?.gas ?? null,
   soilDry: state?.soilDry ?? null,
+  fireDetected: state?.fireDetected ?? null,
+  irDetected: state?.irDetected ?? null,
   gasLevel: gasLevel(state?.gas),
   pumpOn: Boolean(state?.pumpOn),
   lastSeen: state?.lastSeen || null
@@ -53,15 +57,58 @@ const postReading = async (req, res) => {
     const humidity = Number(req.body.humidity);
     const gas = Number(req.body.gas);
     const soilDry = req.body.soilDry;
+    const fireDetected = req.body.fireDetected;
+    const irDetected = req.body.irDetected;
 
     const update = {
       lastSeen: new Date()
     };
 
+    const previousState = await IotState.findOne({ deviceId });
+    const alerts = [];
+
+    if (fireDetected === true && previousState?.fireDetected !== true) {
+      alerts.push({
+        title: "Possible fire detected",
+        message: "The flame sensor detected a possible fire. Please check the farm immediately.",
+        priority: "high"
+      });
+    }
+
+    if (irDetected === true && previousState?.irDetected !== true) {
+      alerts.push({
+        title: "IR sensor detected movement",
+        message: "An object entered the IR sensor range. Check the area; this sensor cannot identify the object.",
+        priority: "normal"
+      });
+    }
+
+    if (soilDry === true && previousState?.soilDry !== true) {
+      alerts.push({
+        title: "Soil is dry",
+        message: "The soil moisture sensor reports dry soil. Check the field and irrigation.",
+        priority: "normal"
+      });
+    }
+
+    if (
+      Number.isFinite(gas) &&
+      gas >= 700 &&
+      (previousState?.gas == null || previousState.gas < 700)
+    ) {
+      alerts.push({
+        title: "MQ-3 reading is high",
+        message: `The MQ-3 sensor reading is ${gas}. Please inspect the sensor and farm area.`,
+        priority: "high"
+      });
+    }
+
     if (Number.isFinite(temperature)) update.temperature = temperature;
     if (Number.isFinite(humidity)) update.humidity = humidity;
     if (Number.isFinite(gas)) update.gas = gas;
     if (typeof soilDry === "boolean") update.soilDry = soilDry;
+    if (typeof fireDetected === "boolean") update.fireDetected = fireDetected;
+    if (typeof irDetected === "boolean") update.irDetected = irDetected;
 
     const state = await IotState.findOneAndUpdate(
       { deviceId },
@@ -71,6 +118,20 @@ const postReading = async (req, res) => {
       },
       { new: true, upsert: true }
     );
+
+    if (alerts.length > 0) {
+      const farmers = await User.find({ role: "farmer", isActive: true }).select("_id");
+      const notifications = farmers.flatMap((farmer) =>
+        alerts.map((alert) => ({
+          userId: farmer._id,
+          ...alert
+        }))
+      );
+
+      if (notifications.length > 0) {
+        await Notification.insertMany(notifications);
+      }
+    }
 
     res.json({
       success: true,
@@ -136,7 +197,14 @@ const setPump = async (req, res) => {
       { deviceId },
       {
         $set: { pumpOn, deviceId },
-        $setOnInsert: { temperature: null, humidity: null, gas: null, soilDry: null }
+        $setOnInsert: {
+          temperature: null,
+          humidity: null,
+          gas: null,
+          soilDry: null,
+          fireDetected: null,
+          irDetected: null
+        }
       },
       { new: true, upsert: true }
     );

@@ -29,6 +29,16 @@ const iotStateSchema = new mongoose.Schema(
       default: null
     },
 
+    fireDetected: {
+      type: Boolean,
+      default: null
+    },
+
+    irDetected: {
+      type: Boolean,
+      default: null
+    },
+
     pumpOn: {
       type: Boolean,
       default: false
